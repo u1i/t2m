@@ -25,7 +25,7 @@ This tool helps you convert proprietary data formats into open, accessible forma
 
 ## 💡 Why This Tool?
 
-This tool automatically handles line breaks within cells (converting them to spaces), ensuring your markdown tables always work correctly.
+Most AI systems struggle to parse tables from Excel sheets and proprietary formats directly. This tool bridges that gap by converting your data into clean Markdown that AI can easily understand and process. It also automatically handles line breaks within cells (converting them to spaces), ensuring your markdown tables always work correctly.
 
 ### Example
 
