@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table to Markdown Converter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 2rem;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 1200px;
+            width: 100%;
+            padding: 3rem;
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #718096;
+            text-align: center;
+            margin-bottom: 2rem;
+            font-size: 1.1rem;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: #48bb78;
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 12px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .input-section, .output-section {
+            margin-bottom: 2rem;
+        }
+
+        label {
+            display: block;
+            color: #2d3748;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+
+        #pasteArea {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 2px dashed #cbd5e0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            resize: vertical;
+            transition: border-color 0.3s;
+            background: #f7fafc;
+        }
+
+        #pasteArea:focus {
+            outline: none;
+            border-color: #667eea;
+            background: white;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        button {
+            flex: 1;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        #convertBtn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+
+        #convertBtn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.3);
+        }
+
+        #clearBtn {
+            background: #e2e8f0;
+            color: #2d3748;
+        }
+
+        #clearBtn:hover {
+            background: #cbd5e0;
+        }
+
+        #output {
+            width: 100%;
+            min-height: 200px;
+            padding: 1rem;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.95rem;
+            resize: vertical;
+            background: #f7fafc;
+        }
+
+        #output:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        #copyBtn {
+            width: 100%;
+            background: #48bb78;
+            color: white;
+            margin-top: 1rem;
+        }
+
+        #copyBtn:hover {
+            background: #38a169;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(72, 187, 120, 0.3);
+        }
+
+        #copyBtn:disabled {
+            background: #cbd5e0;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .info-box {
+            background: #ebf8ff;
+            border-left: 4px solid #4299e1;
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 2rem;
+            color: #2c5282;
+        }
+
+        .info-box strong {
+            display: block;
+            margin-bottom: 0.5rem;
+        }
+
+        .toast {
+            position: fixed;
+            top: 2rem;
+            right: 2rem;
+            background: #48bb78;
+            color: white;
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s;
+            pointer-events: none;
+            z-index: 1000;
+        }
+
+        .toast.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding: 1rem;
+            }
+
+            .container {
+                padding: 1.5rem;
+            }
+
+            h1 {
+                font-size: 1.75rem;
+            }
+
+            .button-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Table to Markdown</h1>
+        <p class="subtitle">Convert Excel and Word tables to clean Markdown</p>
+        
+        <div class="feature-badge">✨ Line breaks automatically handled</div>
+
+        <div class="info-box">
+            <strong>How to use:</strong>
+            1. Copy a table from Excel, Word, or any webpage<br>
+            2. Paste it into the area below<br>
+            3. Click "Convert to Markdown"<br>
+            4. Copy the result!
+        </div>
+
+        <div class="input-section">
+            <label for="pasteArea">Paste Your Table Here:</label>
+            <div contenteditable="true" id="pasteArea" placeholder="Paste your table here..."></div>
+        </div>
+
+        <div class="button-group">
+            <button id="convertBtn">Convert to Markdown</button>
+            <button id="clearBtn">Clear</button>
+        </div>
+
+        <div class="output-section">
+            <label for="output">Markdown Output:</label>
+            <textarea id="output" readonly placeholder="Your markdown table will appear here..."></textarea>
+            <button id="copyBtn" disabled>Copy to Clipboard</button>
+        </div>
+    </div>
+
+    <div class="toast" id="toast">Copied to clipboard!</div>
+
+    <script>
+        const pasteArea = document.getElementById('pasteArea');
+        const output = document.getElementById('output');
+        const convertBtn = document.getElementById('convertBtn');
+        const clearBtn = document.getElementById('clearBtn');
+        const copyBtn = document.getElementById('copyBtn');
+        const toast = document.getElementById('toast');
+
+        // Function to clean text by removing line breaks and extra whitespace
+        function cleanCellText(text) {
+            if (!text) return '';
+            // Replace line breaks with spaces
+            return text
+                .replace(/\r?\n|\r/g, ' ')
+                .replace(/\s+/g, ' ')
+                .trim();
+        }
+
+        // Function to escape pipe characters in cell content
+        function escapePipes(text) {
+            return text.replace(/\|/g, '\\|');
+        }
+
+        // Function to convert HTML table to Markdown
+        function tableToMarkdown(tableElement) {
+            const rows = Array.from(tableElement.querySelectorAll('tr'));
+            if (rows.length === 0) return '';
+
+            const tableData = [];
+
+            // Process each row
+            rows.forEach(row => {
+                const cells = Array.from(row.querySelectorAll('td, th'));
+                const rowData = cells.map(cell => {
+                    let text = cell.textContent || '';
+                    text = cleanCellText(text);
+                    text = escapePipes(text);
+                    return text;
+                });
+                if (rowData.length > 0) {
+                    tableData.push(rowData);
+                }
+            });
+
+            if (tableData.length === 0) return '';
+
+            // Calculate column widths
+            const numColumns = Math.max(...tableData.map(row => row.length));
+            const columnWidths = Array(numColumns).fill(0);
+
+            tableData.forEach(row => {
+                row.forEach((cell, i) => {
+                    columnWidths[i] = Math.max(columnWidths[i], cell.length);
+                });
+            });
+
+            // Ensure minimum width of 3 for each column
+            for (let i = 0; i < columnWidths.length; i++) {
+                columnWidths[i] = Math.max(columnWidths[i], 3);
+            }
+
+            // Build markdown table
+            let markdown = '';
+
+            // Header row
+            const headerRow = tableData[0].map((cell, i) => 
+                cell.padEnd(columnWidths[i], ' ')
+            ).join(' | ');
+            markdown += '| ' + headerRow + ' |\n';
+
+            // Separator row
+            const separator = columnWidths.map(width => 
+                '-'.repeat(width)
+            ).join(' | ');
+            markdown += '| ' + separator + ' |\n';
+
+            // Data rows
+            for (let i = 1; i < tableData.length; i++) {
+                const row = tableData[i];
+                // Pad row to match number of columns
+                while (row.length < numColumns) {
+                    row.push('');
+                }
+                const dataRow = row.map((cell, j) => 
+                    cell.padEnd(columnWidths[j], ' ')
+                ).join(' | ');
+                markdown += '| ' + dataRow + ' |\n';
+            }
+
+            return markdown;
+        }
+
+        // Convert button handler
+        convertBtn.addEventListener('click', () => {
+            const content = pasteArea.innerHTML;
+            
+            // Try to find a table in the pasted content
+            const tempDiv = document.createElement('div');
+            tempDiv.innerHTML = content;
+            
+            const table = tempDiv.querySelector('table');
+            
+            if (table) {
+                const markdown = tableToMarkdown(table);
+                output.value = markdown;
+                copyBtn.disabled = false;
+            } else {
+                output.value = 'No table found. Please paste a table from Excel, Word, or a webpage.';
+                copyBtn.disabled = true;
+            }
+        });
+
+        // Clear button handler
+        clearBtn.addEventListener('click', () => {
+            pasteArea.innerHTML = '';
+            output.value = '';
+            copyBtn.disabled = true;
+        });
+
+        // Copy button handler
+        copyBtn.addEventListener('click', () => {
+            output.select();
+            document.execCommand('copy');
+            
+            // Show toast notification
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 2000);
+        });
+
+        // Auto-focus paste area on load
+        pasteArea.focus();
+    </script>
+</body>
+</html>
