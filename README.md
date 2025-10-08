@@ -21,7 +21,7 @@ This tool helps you convert proprietary data formats into open, accessible forma
 2. Copy a table from Excel, Word, Google Sheets, or any webpage
 3. Paste it into the input area
 4. Click "Convert to Markdown"
-5. Click "Copy to Clipboard" to copy the result
+5. Copy or download the result
 
 ## 💡 Why This Tool?
 
