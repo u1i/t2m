@@ -2,6 +2,10 @@
 
 A simple, elegant web tool that converts tables from Excel, Word, and web pages into clean, properly formatted Markdown tables.
 
+## 📚 Data Archaeological Excavation Tool
+
+This tool helps you convert proprietary data formats into open, accessible formats. You'll probably use AI to digest this information—that's great! Just remember to always check the homework of whatever your AI comes up with.
+
 ## ✨ Features
 
 - **Line Break Handling** - Automatically removes line breaks within cells (a common issue with other converters)
@@ -21,7 +25,7 @@ A simple, elegant web tool that converts tables from Excel, Word, and web pages 
 
 ## 💡 Why This Tool?
 
-Many markdown table converters struggle with line breaks inside table cells, which breaks the markdown syntax. This tool automatically converts line breaks to spaces, ensuring your markdown tables always work correctly.
+This tool automatically handles line breaks within cells (converting them to spaces), ensuring your markdown tables always work correctly.
 
 ### Example
 
