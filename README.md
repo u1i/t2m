@@ -2,6 +2,8 @@
 
 A simple, elegant web tool that converts tables from Excel, Word, and web pages into clean, properly formatted Markdown tables.
 
+🔗 **[Try it live at https://t2m.naida.ai/](https://t2m.naida.ai/)**
+
 ## 📚 Data Archaeological Excavation Tool
 
 This tool helps you convert proprietary data formats into open, accessible formats. You'll probably use AI to digest this information—that's great! Just remember to always check the homework of whatever your AI comes up with.
